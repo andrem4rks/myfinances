@@ -1,12 +1,23 @@
 package com.marks.myfinances.models;
 
 import com.sun.istack.NotNull;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Check;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class Lancamento {
 
   @Id
@@ -27,93 +38,19 @@ public class Lancamento {
   @Column(scale = 2)
   private Double valor;
 
-  @NotNull
-  @Column(length = 20)
-  private String tipo;
 
-  @NotNull
-  @Column(length = 20)
-  private String status;
-
-  @OneToOne
+  @ManyToOne
   private Usuario usuario;
 
-  public long getId() {
-    return id;
-  }
+  @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
+  private LocalDate dataCadastro;
 
-  public void setId(long id) {
-    this.id = id;
-  }
+  @Column(length = 20)
+  @Enumerated(value = EnumType.STRING)
+  private TipoLancamento tipo;
 
-  public String getDescricao() {
-    return descricao;
-  }
-
-  public void setDescricao(String descricao) {
-    this.descricao = descricao;
-  }
-
-  public Integer getMes() {
-    return mes;
-  }
-
-  public void setMes(Integer mes) {
-    this.mes = mes;
-  }
-
-  public Integer getAno() {
-    return ano;
-  }
-
-  public void setAno(Integer ano) {
-    this.ano = ano;
-  }
-
-  public Double getValor() {
-    return valor;
-  }
-
-  public void setValor(Double valor) {
-    this.valor = valor;
-  }
-
-  public String getTipo() {
-    return tipo;
-  }
-
-  public void setTipo(String tipo) {
-    this.tipo = tipo;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public Usuario getUsuario() {
-    return usuario;
-  }
-
-  public void setUsuario(Usuario usuario) {
-    this.usuario = usuario;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Lancamento that = (Lancamento) o;
-    return id == that.id && descricao.equals(that.descricao) && mes.equals(that.mes) && ano.equals(that.ano) && valor.equals(that.valor) && tipo.equals(that.tipo) && status.equals(that.status) && usuario.equals(that.usuario);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, descricao, mes, ano, valor, tipo, status, usuario);
-  }
+  @Column(length = 20)
+  @Enumerated(value = EnumType.STRING)
+  private StatusLancamento status;
 
 }
